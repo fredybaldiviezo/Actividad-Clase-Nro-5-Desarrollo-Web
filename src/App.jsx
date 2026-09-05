@@ -1,32 +1,26 @@
-import { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import ListaComentarios from "./pages/ListaComentarios";
-import { cerrarSesion, suscribirseASesion } from "./services/auth";
+import RutaPrivada from "./context/RutaPrivada";
 
 function App() {
-  const [sesion, setSesion] = useState(null);
-
-  useEffect(() => {
-    const suscripcion = suscribirseASesion((sesionActual) => {
-      setSesion(sesionActual);
-    });
-
-    return () => suscripcion.unsubscribe();
-  }, []);
-
-  if (!sesion) {
-    return <LoginPage />;
-  }
-
   return (
-    <div>
-      <h1>Mi aplicación</h1>
-      <p>Sesión iniciada correctamente.</p>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
 
-      <button onClick={cerrarSesion}>Cerrar sesión</button>
+        <Route
+          path="/comisiones"
+          element={
+            <RutaPrivada>
+              <ListaComentarios comisionId={1} />
+            </RutaPrivada>
+          }
+        />
 
-      <ListaComentarios comisionId={1} sesion={sesion} />
-    </div>
+        <Route path="/" element={<Navigate to="/comisiones" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

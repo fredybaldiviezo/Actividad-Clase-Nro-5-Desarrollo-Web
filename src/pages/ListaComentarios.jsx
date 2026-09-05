@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import {
   obtenerComentarios,
   crearComentario,
@@ -6,7 +7,8 @@ import {
   eliminarComentario,
 } from "../services/comentarios";
 
-function ListaComentarios({ comisionId, sesion }) {
+function ListaComentarios({ comisionId }) {
+  const { sesion } = useAuth();
   const [comentarios, setComentarios] = useState([]);
   const [contenido, setContenido] = useState("");
   const [editandoId, setEditandoId] = useState(null);
@@ -108,7 +110,7 @@ function ListaComentarios({ comisionId, sesion }) {
               <p>{comentario.contenido}</p>
               <small>{new Date(comentario.creado_en).toLocaleString()}</small>
 
-              {comentario.autor_id === sesion.user.id && (
+              {sesion && comentario.autor_id === sesion.user.id && (
                 <>
                   <button onClick={() => comenzarEdicion(comentario)}>
                     Editar
